@@ -1,8 +1,11 @@
 package orchestrator
 
 import (
+	"encoding/json"
+	"fmt"
 	"time"
 
+	"github.com/Aditya7880900936/ai-orchestrator/internal/cache"
 	models "github.com/Aditya7880900936/ai-orchestrator/internal/model"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/parser"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/retry"
@@ -10,6 +13,23 @@ import (
 )
 
 func Analyze(req models.AnalyzeRequest) (*models.AnalyzeResponse, error) {
+
+	cacheKey := cache.GenerateKey(req.Prompt)
+
+	cachedResponse, err := cache.Get(cacheKey)
+	if err == nil {
+
+		var cached models.AnalyzeResponse
+
+		if err := json.Unmarshal([]byte(cachedResponse), &cached); err == nil {
+
+			fmt.Println("CACHE HIT")
+
+			return &cached, nil
+		}
+	}
+
+	fmt.Println("CACHE MISS")
 
 	wf := workflow.NewAnalyzeWorkflow()
 
@@ -31,6 +51,15 @@ func Analyze(req models.AnalyzeRequest) (*models.AnalyzeResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	serialized, _ := json.Marshal(parsed)
+
+	fmt.Println("WRITING TO CACHE")
+
+	_ = cache.Set(
+		cacheKey,
+		string(serialized),
+	)
 
 	return parsed, nil
 }
