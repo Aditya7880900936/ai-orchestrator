@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Aditya7880900936/ai-orchestrator/internal/logger"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/metrics"
 	models "github.com/Aditya7880900936/ai-orchestrator/internal/model"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/orchestrator"
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,13 @@ import (
 )
 
 func AnalyzeHandler(c *gin.Context) {
+
+	metrics.AnalyzeRequests.Inc()
+
+	current := metrics.AnalyzeRequests
+	_ = current
+
+	println("COUNTER INCREMENTED")
 
 	requestID, _ := c.Get("request_id")
 

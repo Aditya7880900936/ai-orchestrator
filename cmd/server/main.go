@@ -8,6 +8,8 @@ import (
 	llm "github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/logger"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/middleware"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/metrics"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -21,6 +23,7 @@ func main() {
 	}
 
 	cache.InitRedis()
+	metrics.Init()
 
 	if err := logger.Init(); err != nil {
 		log.Fatal(err)
@@ -41,6 +44,8 @@ func main() {
 			"status": "ok",
 		})
 	})
+
+	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	r.POST("/analyze", handler.AnalyzeHandler)
 
