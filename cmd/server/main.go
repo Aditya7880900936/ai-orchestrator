@@ -16,7 +16,9 @@ func main() {
 		log.Fatal("Error loading .env")
 	}
 
-	llm.InitOpenAI()
+if err := llm.InitGemini(); err != nil {
+	log.Fatal(err)
+}
 
 	r := gin.Default()
 
