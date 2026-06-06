@@ -1,35 +1,23 @@
 package orchestrator
 
 import (
-	"fmt"
 	"time"
 
-	"github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 	models "github.com/Aditya7880900936/ai-orchestrator/internal/model"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/parser"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/retry"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/workflow"
 )
 
 func Analyze(req models.AnalyzeRequest) (*models.AnalyzeResponse, error) {
 
-	enrichedPrompt := fmt.Sprintf(`
-You are an intelligent analyzer.
-
-Return ONLY valid JSON in this format:
-{
-  "summary": "...",
-  "keywords": ["...", "..."]
-}
-
-User Input:
-%s
-`, req.Prompt)
+	wf := workflow.NewAnalyzeWorkflow()
 
 	resp, err := retry.Execute(
 		3,
 		2*time.Second,
 		func() (string, error) {
-			return llm.Generate(enrichedPrompt)
+			return wf.Run(req.Prompt)
 		},
 	)
 

@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+
 	handler "github.com/Aditya7880900936/ai-orchestrator/internal/api/handler"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/cache"
 	llm "github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 
 	"github.com/gin-gonic/gin"
@@ -10,15 +12,15 @@ import (
 )
 
 func main() {
-
+	cache.InitRedis()
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env")
 	}
 
-if err := llm.InitGemini(); err != nil {
-	log.Fatal(err)
-}
+	if err := llm.InitGemini(); err != nil {
+		log.Fatal(err)
+	}
 
 	r := gin.Default()
 
