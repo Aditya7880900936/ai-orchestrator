@@ -1,10 +1,9 @@
 package parser
 
-import (
-	"strings"
-)
+import "strings"
 
 func ExtractJSON(raw string) string {
+
 	start := strings.Index(raw, "{")
 	end := strings.LastIndex(raw, "}")
 

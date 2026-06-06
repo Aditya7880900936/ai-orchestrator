@@ -2,24 +2,25 @@ package retry
 
 import "time"
 
-func Execute(
+func Execute[T any](
 	attempts int,
 	delay time.Duration,
-	fn func() error,
-) error {
+	fn func() (T, error),
+) (T, error) {
 
+	var result T
 	var err error
 
 	for i := 0; i < attempts; i++ {
 
-		err = fn()
+		result, err = fn()
 
 		if err == nil {
-			return nil
+			return result, nil
 		}
 
 		time.Sleep(delay)
 	}
 
-	return err
+	return result, err
 }

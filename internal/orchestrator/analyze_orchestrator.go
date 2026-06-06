@@ -1,11 +1,13 @@
 package orchestrator
 
 import (
-	"encoding/json"
 	"fmt"
+	"time"
 
-	models "github.com/Aditya7880900936/ai-orchestrator/internal/model"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/llm"
+	models "github.com/Aditya7880900936/ai-orchestrator/internal/model"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/parser"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/retry"
 )
 
 func Analyze(req models.AnalyzeRequest) (*models.AnalyzeResponse, error) {
@@ -23,17 +25,24 @@ User Input:
 %s
 `, req.Prompt)
 
-	resp, err := llm.Generate(enrichedPrompt)
+	resp, err := retry.Execute(
+		3,
+		2*time.Second,
+		func() (string, error) {
+			return llm.Generate(enrichedPrompt)
+		},
+	)
+
 	if err != nil {
 		return nil, err
 	}
 
-	var parsed models.AnalyzeResponse
+	cleaned := parser.ExtractJSON(resp)
 
-	err = json.Unmarshal([]byte(resp), &parsed)
+	parsed, err := parser.Parse[models.AnalyzeResponse](cleaned)
 	if err != nil {
 		return nil, err
 	}
 
-	return &parsed, nil
+	return parsed, nil
 }
