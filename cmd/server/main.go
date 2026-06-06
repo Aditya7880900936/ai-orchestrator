@@ -6,16 +6,24 @@ import (
 	handler "github.com/Aditya7880900936/ai-orchestrator/internal/api/handler"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/cache"
 	llm "github.com/Aditya7880900936/ai-orchestrator/internal/llm"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/logger"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	cache.InitRedis()
+
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env")
+	}
+
+	cache.InitRedis()
+
+	if err := logger.Init(); err != nil {
+		log.Fatal(err)
 	}
 
 	if err := llm.InitGemini(); err != nil {
@@ -23,6 +31,10 @@ func main() {
 	}
 
 	r := gin.Default()
+
+	r.Use(
+		middleware.RequestID(),
+	)
 
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
