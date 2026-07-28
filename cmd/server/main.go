@@ -54,6 +54,7 @@ func main() {
 	routes.RegisterJobMatchRoutes(r)
 	routes.RegisterResumeImproveRoutes(r)
 	routes.RegisterCoverLetterRoutes(r)
+	routes.RegisterResumeChatRoutes(r)
 	log.Println("Server running on :8080")
 	r.Run(":8080")
 }
