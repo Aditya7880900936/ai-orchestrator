@@ -50,6 +50,7 @@ func main() {
 	r.POST("/analyze", handler.AnalyzeHandler)
 	routes.RegisterResumeRoutes(r)
 	routes.RegisterSkillRoutes(r)
+	routes.RegisterATSRoutes(r)
 	log.Println("Server running on :8080")
 	r.Run(":8080")
 }

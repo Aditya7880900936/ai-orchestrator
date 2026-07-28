@@ -1,0 +1,30 @@
+package handler
+
+import (
+	"net/http"
+
+	"github.com/Aditya7880900936/ai-orchestrator/internal/orchestrator"
+	models "github.com/Aditya7880900936/ai-orchestrator/internal/model"
+	"github.com/gin-gonic/gin"
+)
+
+func CalculateATS(c *gin.Context) {
+	var req models.ATSScoreRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	resp, err := orchestrator.CalculateATS(req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
