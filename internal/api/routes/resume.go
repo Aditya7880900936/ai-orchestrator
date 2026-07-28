@@ -8,4 +8,5 @@ import (
 
 func RegisterResumeRoutes(r *gin.Engine) {
 	r.POST("/resume/analyze", handler.AnalyzeResume)
+	r.POST("/resume/upload", handler.UploadResume)
 }

@@ -10,24 +10,13 @@ import (
 
 func ChatWithResume(req models.ResumeChatRequest) (*models.ResumeChatResponse, error) {
 
-	var resume string
-	var err error
-
-	// Store resume on first request
-	if req.ResumeText != "" {
-		resume = req.ResumeText
-
-		if err := cache.SaveSession(req.SessionID, resume); err != nil {
-			return nil, err
-		}
-	} else {
-		resume, err = cache.GetSession(req.SessionID)
-		if err != nil {
-			return nil, fmt.Errorf("session not found")
-		}
+	// Resume hamesha Redis se load hoga
+	resume, err := cache.GetSession(req.SessionID)
+	if err != nil || resume == "" {
+		return nil, fmt.Errorf("invalid session id or resume not found")
 	}
 
-	// Load previous conversation
+	// Previous conversation load karo
 	conversation, _ := cache.GetConversation(req.SessionID)
 
 	input := fmt.Sprintf(
@@ -55,7 +44,7 @@ Current Question:
 		return nil, err
 	}
 
-	// Append latest Q&A
+	// Conversation update
 	conversation += fmt.Sprintf(
 		"\nUser: %s\nAssistant: %s\n",
 		req.Question,

@@ -2,6 +2,8 @@ package orchestrator
 
 import (
 	"encoding/json"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/Aditya7880900936/ai-orchestrator/internal/cache"
@@ -15,6 +17,10 @@ const (
 	DefaultRetryDelay    = time.Second
 )
 
+type unwrap struct {
+	Answer string `json:"answer"`
+}
+
 func ExecutePipeline[T any](
 	cacheKey string,
 	input string,
@@ -23,11 +29,17 @@ func ExecutePipeline[T any](
 
 	// Cache
 	if data, err := cache.Get(cacheKey); err == nil && data != "" {
+		fmt.Println("========== CACHE HIT ==========")
+
 		var res T
 		if err := json.Unmarshal([]byte(data), &res); err == nil {
 			return &res, nil
 		}
+
+		fmt.Println("Cache unmarshal failed, regenerating...")
 	}
+
+	fmt.Println("========== CACHE MISS ==========")
 
 	// Workflow
 	raw, err := retry.Execute(
@@ -41,17 +53,38 @@ func ExecutePipeline[T any](
 		return nil, err
 	}
 
-	// Parse
+	fmt.Println("\n========== RAW LLM RESPONSE ==========")
+	fmt.Println(raw)
+	fmt.Println("======================================")
+
+	// Extract JSON
 	jsonText := parser.ExtractJSON(raw)
 
+	fmt.Println("\n========== EXTRACTED JSON ==========")
+	fmt.Println(jsonText)
+	fmt.Println("====================================")
+
+	var u unwrap
+	if err := json.Unmarshal([]byte(jsonText), &u); err == nil {
+		if strings.HasPrefix(strings.TrimSpace(u.Answer), "{") {
+			jsonText = u.Answer
+		}
+	}
+
+	// Parse
 	res, err := parser.Parse[T](jsonText)
 	if err != nil {
+		fmt.Println("\n========== PARSE ERROR ==========")
+		fmt.Println(err)
+		fmt.Println("=================================")
 		return nil, err
 	}
 
 	// Cache
 	bytes, _ := json.Marshal(res)
 	_ = cache.Set(cacheKey, string(bytes))
+
+	fmt.Println("\n========== PIPELINE SUCCESS ==========")
 
 	return res, nil
 }
