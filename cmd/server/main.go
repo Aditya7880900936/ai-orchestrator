@@ -4,15 +4,15 @@ import (
 	"log"
 
 	handler "github.com/Aditya7880900936/ai-orchestrator/internal/api/handler"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/api/routes"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/cache"
 	llm "github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/logger"
-	"github.com/Aditya7880900936/ai-orchestrator/internal/middleware"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/metrics"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-
+	"github.com/Aditya7880900936/ai-orchestrator/internal/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
@@ -48,7 +48,7 @@ func main() {
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	r.POST("/analyze", handler.AnalyzeHandler)
-
+	routes.RegisterResumeRoutes(r)
 	log.Println("Server running on :8080")
 	r.Run(":8080")
 }

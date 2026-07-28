@@ -1,4 +1,4 @@
-package models
+package model
 
 type AnalyzeRequest struct {
 	Prompt string `json:"prompt"`
