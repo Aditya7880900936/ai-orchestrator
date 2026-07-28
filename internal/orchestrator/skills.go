@@ -6,12 +6,12 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/workflow"
 )
 
-func AnalyzeResume(req models.ResumeAnalyzeRequest) (*models.ResumeAnalyzeResponse, error) {
+func ExtractSkills(req models.SkillExtractionRequest) (*models.SkillExtractionResponse, error) {
 	cacheKey := cache.GenerateKey(req.ResumeText)
 
-	return ExecutePipeline[models.ResumeAnalyzeResponse](
+	return ExecutePipeline[models.SkillExtractionResponse](
 		cacheKey,
 		req.ResumeText,
-		workflow.NewResumeWorkflow(),
+		workflow.NewSkillExtractionWorkflow(),
 	)
 }
