@@ -13,7 +13,7 @@ func ChatWithResume(req models.ResumeChatRequest) (*models.ResumeChatResponse, e
 	var resume string
 	var err error
 
-	// First request: save resume
+	// Store resume on first request
 	if req.ResumeText != "" {
 		resume = req.ResumeText
 
@@ -21,28 +21,48 @@ func ChatWithResume(req models.ResumeChatRequest) (*models.ResumeChatResponse, e
 			return nil, err
 		}
 	} else {
-		// Later requests: load resume
 		resume, err = cache.GetSession(req.SessionID)
 		if err != nil {
 			return nil, fmt.Errorf("session not found")
 		}
 	}
 
+	// Load previous conversation
+	conversation, _ := cache.GetConversation(req.SessionID)
+
 	input := fmt.Sprintf(
 		`Resume:
 %s
 
-Question:
+Conversation:
+%s
+
+Current Question:
 %s`,
 		resume,
+		conversation,
 		req.Question,
 	)
 
 	cacheKey := cache.GenerateKey(input)
 
-	return ExecutePipeline[models.ResumeChatResponse](
+	resp, err := ExecutePipeline[models.ResumeChatResponse](
 		cacheKey,
 		input,
 		workflow.NewResumeChatWorkflow(),
 	)
+	if err != nil {
+		return nil, err
+	}
+
+	// Append latest Q&A
+	conversation += fmt.Sprintf(
+		"\nUser: %s\nAssistant: %s\n",
+		req.Question,
+		resp.Answer,
+	)
+
+	_ = cache.SaveConversation(req.SessionID, conversation)
+
+	return resp, nil
 }

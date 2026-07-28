@@ -22,3 +22,25 @@ func GetSession(sessionID string) (string, error) {
 		"resume:"+sessionID,
 	).Result()
 }
+
+func SaveConversation(sessionID, conversation string) error {
+	return Client.Set(
+		context.Background(),
+		"chat:"+sessionID,
+		conversation,
+		sessionTTL,
+	).Err()
+}
+
+func GetConversation(sessionID string) (string, error) {
+	conversation, err := Client.Get(
+		context.Background(),
+		"chat:"+sessionID,
+	).Result()
+
+	if err != nil {
+		return "", nil
+	}
+
+	return conversation, nil
+}
