@@ -52,6 +52,7 @@ func main() {
 	routes.RegisterSkillRoutes(r)
 	routes.RegisterATSRoutes(r)
 	routes.RegisterJobMatchRoutes(r)
+	routes.RegisterResumeImproveRoutes(r)
 	log.Println("Server running on :8080")
 	r.Run(":8080")
 }
