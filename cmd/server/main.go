@@ -5,10 +5,11 @@ import (
 
 	_ "github.com/Aditya7880900936/ai-orchestrator/docs"
 
-	middle "github.com/Aditya7880900936/ai-orchestrator/internal/api/middleware"
 	handler "github.com/Aditya7880900936/ai-orchestrator/internal/api/handler"
+	middle "github.com/Aditya7880900936/ai-orchestrator/internal/api/middleware"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/api/routes"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/cache"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/database"
 	llm "github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/logger"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/metrics"
@@ -35,6 +36,7 @@ func main() {
 	}
 
 	cache.InitRedis()
+	database.Init()
 	metrics.Init()
 
 	if err := logger.Init(); err != nil {
