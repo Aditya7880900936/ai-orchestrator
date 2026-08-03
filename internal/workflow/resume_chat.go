@@ -12,7 +12,7 @@ func NewResumeChatWorkflow() *ResumeChatWorkflow {
 
 func (w *ResumeChatWorkflow) Run(input string) (string, error) {
 
-prompt := `
+	prompt := `
 You are an expert Technical Recruiter and Senior Software Engineer.
 
 You are given:

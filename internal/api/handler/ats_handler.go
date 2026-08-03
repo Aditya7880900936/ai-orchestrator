@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/Aditya7880900936/ai-orchestrator/internal/orchestrator"
 	models "github.com/Aditya7880900936/ai-orchestrator/internal/model"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/orchestrator"
 	"github.com/gin-gonic/gin"
 )
 
