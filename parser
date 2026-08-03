@@ -1,0 +1,20 @@
+mode: set
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/cleaner.go:5.37,10.46 3 0
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/cleaner.go:10.46,12.3 1 0
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/cleaner.go:14.2,14.27 1 0
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:9.43,14.61 2 1
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:14.61,18.63 2 1
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:18.63,19.39 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:19.39,21.5 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:26.2,27.62 2 1
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:27.62,29.3 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:31.2,32.9 2 1
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:32.9,34.3 1 0
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:36.2,38.37 2 1
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:38.37,40.3 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:43.2,43.64 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:43.64,45.3 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:49.2,53.64 2 0
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:53.64,59.64 3 0
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:59.64,61.4 1 0
+github.com/Aditya7880900936/ai-orchestrator/internal/parser/parser.go:64.2,64.56 1 0

@@ -12,7 +12,14 @@ func Parse[T any](raw string) (*T, error) {
 
 	// First attempt
 	if err := json.Unmarshal([]byte(raw), &result); err == nil {
-		return &result, nil
+
+		// Agar input wrapped JSON hai to first parse ko ignore karo
+		var wrapper map[string]any
+		if err := json.Unmarshal([]byte(raw), &wrapper); err == nil {
+			if _, ok := wrapper["answer"]; !ok {
+				return &result, nil
+			}
+		}
 	}
 
 	// Check if LLM wrapped JSON inside "answer"
