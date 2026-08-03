@@ -17,6 +17,14 @@ const (
 	DefaultRetryDelay    = time.Second
 )
 
+// Dependency injection points for testing.
+var (
+	executeRetry = retry.Execute[string]
+	cacheGet     = cache.Get
+	cacheSet     = cache.Set
+	extractJSON  = parser.ExtractJSON
+)
+
 type unwrap struct {
 	Answer string `json:"answer"`
 }
@@ -28,7 +36,7 @@ func ExecutePipeline[T any](
 ) (*T, error) {
 
 	// Cache
-	if data, err := cache.Get(cacheKey); err == nil && data != "" {
+	if data, err := cacheGet(cacheKey); err == nil && data != "" {
 
 		var res T
 		if err := json.Unmarshal([]byte(data), &res); err == nil {
@@ -39,7 +47,7 @@ func ExecutePipeline[T any](
 	}
 
 	// Workflow
-	raw, err := retry.Execute(
+	raw, err := executeRetry(
 		DefaultRetryAttempts,
 		DefaultRetryDelay,
 		func() (string, error) {
@@ -51,7 +59,7 @@ func ExecutePipeline[T any](
 	}
 
 	// Extract JSON
-	jsonText := parser.ExtractJSON(raw)
+	jsonText := extractJSON(raw)
 
 	var u unwrap
 	if err := json.Unmarshal([]byte(jsonText), &u); err == nil {
@@ -68,8 +76,7 @@ func ExecutePipeline[T any](
 
 	// Cache
 	bytes, _ := json.Marshal(res)
-	_ = cache.Set(cacheKey, string(bytes))
-
+	_ = cacheSet(cacheKey, string(bytes))
 
 	return res, nil
 }
