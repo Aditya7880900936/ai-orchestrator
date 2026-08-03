@@ -15,7 +15,7 @@ func Init() {
 
 	url := os.Getenv("DATABASE_URL")
 	if url == "" {
-		url = "postgres://postgres:postgres@localhost:5432/ai_orchestrator?sslmode=disable"
+		url = "postgres://postgres:postgres@127.0.0.1:5433/ai_orchestrator?sslmode=disable"
 	}
 
 	var pool *pgxpool.Pool
