@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+
+  app:
+    build: .
+    container_name: ai-orchestrator
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - redis
+
+    environment:
+      REDIS_ADDR: redis:6379
+
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+
+    container_name: ai-orchestrator-redis
+
+    ports:
+      - "6379:6379"
+
+    restart: unless-stopped
+
+    command: redis-server --appendonly yes

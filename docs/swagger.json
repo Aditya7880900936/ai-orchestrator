@@ -1,0 +1,12 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Production-grade AI Orchestration Backend with Resume Analysis, ATS Scoring, Job Matching, Resume Chat, Cover Letter Generation and AI Workflows.",
+        "title": "AI Orchestrator API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {}
+}
