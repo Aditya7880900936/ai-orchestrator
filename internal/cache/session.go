@@ -1,42 +1,32 @@
 package cache
 
-import (
-	"context"
-	"time"
-)
+import "time"
 
 const sessionTTL = 24 * time.Hour
 
 func SaveSession(sessionID, resume string) error {
-	return Client.Set(
-		context.Background(),
+	return redisSet(
 		"resume:"+sessionID,
 		resume,
 		sessionTTL,
-	).Err()
+	)
 }
 
 func GetSession(sessionID string) (string, error) {
-	return Client.Get(
-		context.Background(),
-		"resume:"+sessionID,
-	).Result()
+	return redisGet("resume:" + sessionID)
 }
 
 func SaveConversation(sessionID, conversation string) error {
-	return Client.Set(
-		context.Background(),
+	return redisSet(
 		"chat:"+sessionID,
 		conversation,
 		sessionTTL,
-	).Err()
+	)
 }
 
 func GetConversation(sessionID string) (string, error) {
-	conversation, err := Client.Get(
-		context.Background(),
-		"chat:"+sessionID,
-	).Result()
+
+	conversation, err := redisGet("chat:" + sessionID)
 
 	if err != nil {
 		return "", nil

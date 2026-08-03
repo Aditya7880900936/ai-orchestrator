@@ -2,15 +2,18 @@ package cache
 
 import "time"
 
-func Get(key string) (string, error) {
+var redisGet = func(key string) (string, error) {
 	return Client.Get(Ctx, key).Result()
 }
 
+var redisSet = func(key, value string, ttl time.Duration) error {
+	return Client.Set(Ctx, key, value, ttl).Err()
+}
+
+func Get(key string) (string, error) {
+	return redisGet(key)
+}
+
 func Set(key string, value string) error {
-	return Client.Set(
-		Ctx,
-		key,
-		value,
-		30*time.Minute,
-	).Err()
+	return redisSet(key, value, 30*time.Minute)
 }

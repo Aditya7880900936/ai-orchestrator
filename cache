@@ -1,0 +1,15 @@
+mode: set
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/cache.go:5.49,7.2 1 0
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/cache.go:9.65,11.2 1 0
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/cache.go:13.38,15.2 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/cache.go:17.42,19.2 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/hash.go:8.39,11.2 2 1
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/redis.go:13.18,16.16 2 1
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/redis.go:16.16,18.3 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/redis.go:20.2,22.4 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/session.go:7.50,13.2 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/session.go:15.51,17.2 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/session.go:19.61,25.2 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/session.go:27.56,31.16 2 1
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/session.go:31.16,33.3 1 1
+github.com/Aditya7880900936/ai-orchestrator/internal/cache/session.go:35.2,35.26 1 1
