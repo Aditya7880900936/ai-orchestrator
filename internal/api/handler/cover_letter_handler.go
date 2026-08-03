@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Dependency injection point
+var generateCoverLetter = orchestrator.GenerateCoverLetter
+
 func GenerateCoverLetter(c *gin.Context) {
 	var req models.CoverLetterRequest
 
@@ -18,7 +21,7 @@ func GenerateCoverLetter(c *gin.Context) {
 		return
 	}
 
-	resp, err := orchestrator.GenerateCoverLetter(req)
+	resp, err := generateCoverLetter(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

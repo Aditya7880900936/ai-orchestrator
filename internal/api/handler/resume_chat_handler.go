@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Dependency injection point
+var chatWithResume = orchestrator.ChatWithResume
+
 func ChatWithResume(c *gin.Context) {
 	var req models.ResumeChatRequest
 
@@ -18,7 +21,7 @@ func ChatWithResume(c *gin.Context) {
 		return
 	}
 
-	resp, err := orchestrator.ChatWithResume(req)
+	resp, err := chatWithResume(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

@@ -11,6 +11,9 @@ import (
 	"go.uber.org/zap"
 )
 
+// Dependency injection point
+var analyze = orchestrator.Analyze
+
 func AnalyzeHandler(c *gin.Context) {
 
 	metrics.AnalyzeRequests.Inc()
@@ -51,7 +54,7 @@ func AnalyzeHandler(c *gin.Context) {
 		return
 	}
 
-	resp, err := orchestrator.Analyze(req)
+	resp, err := analyze(req)
 	if err != nil {
 
 		logger.Log.Error(

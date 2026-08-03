@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Dependency injection point
+var improveResume = orchestrator.ImproveResume
+
 func ImproveResume(c *gin.Context) {
 	var req models.ResumeImproveRequest
 
@@ -18,7 +21,7 @@ func ImproveResume(c *gin.Context) {
 		return
 	}
 
-	resp, err := orchestrator.ImproveResume(req)
+	resp, err := improveResume(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

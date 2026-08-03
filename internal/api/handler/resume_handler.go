@@ -12,6 +12,9 @@ import (
 	"go.uber.org/zap"
 )
 
+// Dependency injection point
+var analyzeResume = orchestrator.AnalyzeResume
+
 func AnalyzeResume(c *gin.Context) {
 
 	var req model.ResumeAnalyzeRequest
@@ -28,7 +31,7 @@ func AnalyzeResume(c *gin.Context) {
 
 	metrics.AnalyzeRequests.Inc()
 
-	res, err := orchestrator.AnalyzeResume(req)
+	res, err := analyzeResume(req)
 	if err != nil {
 		logger.Log.Error("resume analysis failed",
 			zap.Error(err),

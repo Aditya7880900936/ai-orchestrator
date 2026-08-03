@@ -9,6 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Dependency injection point
+var uploadResume = orchestrator.UploadResume
+
 func UploadResume(c *gin.Context) {
 
 	file, err := c.FormFile("resume")
@@ -19,7 +22,7 @@ func UploadResume(c *gin.Context) {
 		return
 	}
 
-	sessionID, err := orchestrator.UploadResume(file)
+	sessionID, err := uploadResume(file)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

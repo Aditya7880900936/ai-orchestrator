@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Dependency injection point
+var matchJob = orchestrator.MatchJob
+
 func MatchJob(c *gin.Context) {
 	var req models.JobMatchRequest
 
@@ -18,7 +21,7 @@ func MatchJob(c *gin.Context) {
 		return
 	}
 
-	resp, err := orchestrator.MatchJob(req)
+	resp, err := matchJob(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

@@ -12,6 +12,9 @@ import (
 	"go.uber.org/zap"
 )
 
+// Dependency injection point
+var extractSkills = orchestrator.ExtractSkills
+
 func ExtractSkills(c *gin.Context) {
 
 	var req model.SkillExtractionRequest
@@ -28,7 +31,7 @@ func ExtractSkills(c *gin.Context) {
 
 	metrics.AnalyzeRequests.Inc()
 
-	res, err := orchestrator.ExtractSkills(req)
+	res, err := extractSkills(req)
 	if err != nil {
 		logger.Log.Error("skill extraction failed",
 			zap.Error(err),

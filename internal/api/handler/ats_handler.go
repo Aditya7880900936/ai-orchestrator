@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Dependency injection point
+var calculateATS = orchestrator.CalculateATS
+
 func CalculateATS(c *gin.Context) {
 	var req models.ATSScoreRequest
 
@@ -18,7 +21,7 @@ func CalculateATS(c *gin.Context) {
 		return
 	}
 
-	resp, err := orchestrator.CalculateATS(req)
+	resp, err := calculateATS(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
