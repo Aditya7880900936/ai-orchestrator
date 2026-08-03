@@ -10,6 +10,7 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/logger"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/metrics"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/middleware"
+	middle "github.com/Aditya7880900936/ai-orchestrator/internal/api/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -37,6 +38,8 @@ func main() {
 
 	r.Use(
 		middleware.RequestID(),
+		middle.RateLimiter(),
+		middle.Logger(),
 	)
 
 	r.GET("/health", func(c *gin.Context) {
