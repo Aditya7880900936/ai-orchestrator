@@ -14,6 +14,7 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/logger"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/metrics"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/middleware"
+	"github.com/Aditya7880900936/ai-orchestrator/internal/repository"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -37,6 +38,11 @@ func main() {
 
 	cache.InitRedis()
 	database.Init()
+	analysisRepo := repository.NewAnalysisRepository()
+
+	if err := analysisRepo.CreateTable(); err != nil {
+		log.Fatal(err)
+	}
 	metrics.Init()
 
 	if err := logger.Init(); err != nil {
