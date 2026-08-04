@@ -13,31 +13,52 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/parser/document"
 )
 
+var (
+	newUUID = uuid.NewString
+
+	openMultipartFile = func(file *multipart.FileHeader) (multipart.File, error) {
+		return file.Open()
+	}
+
+	createTempFile = os.Create
+
+	copyContent = io.Copy
+
+	removeFile = os.Remove
+
+	saveResumeSession = cache.SaveSession
+
+	newDocumentParser = document.NewParser
+)
+
 func UploadResume(file *multipart.FileHeader) (string, error) {
 
-	sessionID := uuid.NewString()
+	sessionID := newUUID()
 
-	src, err := file.Open()
+	src, err := openMultipartFile(file)
 	if err != nil {
 		return "", err
 	}
 	defer src.Close()
 
-	tmpFile := filepath.Join(os.TempDir(), sessionID+filepath.Ext(file.Filename))
+	tmpFile := filepath.Join(
+		os.TempDir(),
+		sessionID+filepath.Ext(file.Filename),
+	)
 
-	dst, err := os.Create(tmpFile)
+	dst, err := createTempFile(tmpFile)
 	if err != nil {
 		return "", err
 	}
 	defer dst.Close()
 
-	if _, err := io.Copy(dst, src); err != nil {
+	if _, err := copyContent(dst, src); err != nil {
 		return "", err
 	}
 
-	defer os.Remove(tmpFile)
+	defer removeFile(tmpFile)
 
-	parser, err := document.NewParser(file.Filename)
+	parser, err := newDocumentParser(file.Filename)
 	if err != nil {
 		return "", err
 	}
@@ -51,7 +72,7 @@ func UploadResume(file *multipart.FileHeader) (string, error) {
 		return "", fmt.Errorf("resume text is empty")
 	}
 
-	if err := cache.SaveSession(sessionID, text); err != nil {
+	if err := saveResumeSession(sessionID, text); err != nil {
 		return "", err
 	}
 
