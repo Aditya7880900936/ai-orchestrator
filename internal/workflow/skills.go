@@ -2,6 +2,9 @@ package workflow
 
 import "github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 
+// Dependency injection point
+var generateSkillLLM = llm.Generate
+
 type SkillExtractionWorkflow struct{}
 
 func NewSkillExtractionWorkflow() *SkillExtractionWorkflow {
@@ -29,5 +32,5 @@ Return ONLY valid JSON.
 Resume:
 ` + resume
 
-	return llm.Generate(prompt)
+	return generateSkillLLM(prompt)
 }

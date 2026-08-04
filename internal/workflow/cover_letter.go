@@ -4,6 +4,9 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 )
 
+// Dependency injection point
+var generateCoverLetterLLM = llm.Generate
+
 type CoverLetterWorkflow struct{}
 
 func NewCoverLetterWorkflow() *CoverLetterWorkflow {
@@ -38,5 +41,5 @@ Candidate Information:
 
 ` + input
 
-	return llm.Generate(prompt)
+	return generateCoverLetterLLM(prompt)
 }

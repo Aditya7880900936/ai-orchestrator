@@ -4,6 +4,9 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 )
 
+// Dependency injection point
+var generateResumeLLM = llm.Generate
+
 type ResumeWorkflow struct{}
 
 func NewResumeWorkflow() *ResumeWorkflow {
@@ -28,5 +31,5 @@ Analyze the following resume and return ONLY valid JSON.
 Resume:
 ` + resumeText
 
-	return llm.Generate(prompt)
+	return generateResumeLLM(prompt)
 }

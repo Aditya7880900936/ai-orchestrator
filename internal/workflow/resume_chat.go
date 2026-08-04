@@ -4,6 +4,9 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 )
 
+// Dependency injection point
+var generateResumeChatLLM = llm.Generate
+
 type ResumeChatWorkflow struct{}
 
 func NewResumeChatWorkflow() *ResumeChatWorkflow {
@@ -43,5 +46,5 @@ Resume, conversation and question:
 
 ` + input
 
-	return llm.Generate(prompt)
+	return generateResumeChatLLM(prompt)
 }

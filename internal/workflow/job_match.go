@@ -6,6 +6,9 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 )
 
+// Dependency injection point
+var generateJobMatchLLM = llm.Generate
+
 type JobMatchWorkflow struct{}
 
 func NewJobMatchWorkflow() *JobMatchWorkflow {
@@ -33,5 +36,5 @@ Return ONLY valid JSON.
 %s
 `, input)
 
-	return llm.Generate(prompt)
+	return generateJobMatchLLM(prompt)
 }

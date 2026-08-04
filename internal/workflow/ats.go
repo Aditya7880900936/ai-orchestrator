@@ -6,6 +6,9 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 )
 
+// Dependency injection point
+var generateATSLLM = llm.Generate
+
 type ATSWorkflow struct{}
 
 func NewATSWorkflow() *ATSWorkflow {
@@ -39,5 +42,5 @@ Resume:
 %s
 `, input)
 
-	return llm.Generate(prompt)
+	return generateATSLLM(prompt)
 }

@@ -6,6 +6,9 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/llm"
 )
 
+// Dependency injection point
+var generateLLM = llm.Generate
+
 type AnalyzeWorkflow struct{}
 
 func NewAnalyzeWorkflow() *AnalyzeWorkflow {
@@ -27,5 +30,5 @@ Input:
 %s
 `, input)
 
-	return llm.Generate(prompt)
+	return generateLLM(prompt)
 }
