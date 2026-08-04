@@ -1,71 +1,62 @@
 package orchestrator
 
 import (
+	"errors"
 	"testing"
-	"time"
 
 	models "github.com/Aditya7880900936/ai-orchestrator/internal/model"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/workflow"
 )
 
-func TestCalculateATS(t *testing.T) {
+func TestCalculateATS_Success(t *testing.T) {
 
-	// Backup original dependencies
 	oldWorkflow := newATSWorkflow
-	oldCacheGet := cacheGet
-	oldCacheSet := cacheSet
-	oldExecuteRetry := executeRetry
-	oldExtractJSON := extractJSON
+	oldPipeline := executeATSPipeline
 
 	defer func() {
 		newATSWorkflow = oldWorkflow
-		cacheGet = oldCacheGet
-		cacheSet = oldCacheSet
-		executeRetry = oldExecuteRetry
-		extractJSON = oldExtractJSON
+		executeATSPipeline = oldPipeline
 	}()
 
-	// Cache miss
-	cacheGet = func(key string) (string, error) {
-		return "", nil
-	}
-
-	// Ignore cache write
-	cacheSet = func(key, value string) error {
-		return nil
-	}
-
-	// Mock workflow
 	newATSWorkflow = func() workflow.Workflow {
-		return &MockWorkflow{
-			Response: `{
-				"overall_score":90,
-				"section_scores":{
-					"contact":10,
-					"summary":20,
-					"skills":20,
-					"experience":20,
-					"education":20
-				},
-				"missing_keywords":["Docker"],
-				"strengths":["Go"],
-				"weaknesses":["Kubernetes"],
-				"suggestions":["Add projects"]
-			}`,
+		return &MockWorkflow{}
+	}
+
+	called := false
+
+	executeATSPipeline = func(
+		cacheKey string,
+		input string,
+		wf workflow.Workflow,
+	) (*models.ATSScoreResponse, error) {
+
+		called = true
+
+		if cacheKey == "" {
+			t.Fatal("expected cache key")
 		}
-	}
 
-	// Execute workflow directly
-	executeRetry = func(
-		attempts int,
-		delay time.Duration,
-		fn func() (string, error),
-	) (string, error) {
-		return fn()
-	}
+		if input != "Backend Developer" {
+			t.Fatalf("unexpected input %s", input)
+		}
 
-	extractJSON = func(s string) string {
-		return s
+		if wf == nil {
+			t.Fatal("workflow is nil")
+		}
+		return &models.ATSScoreResponse{
+			OverallScore: 90,
+			SectionScores: models.SectionScore{
+				Contact:    10,
+				Summary:    20,
+				Skills:     20,
+				Experience: 20,
+				Education:  20,
+			},
+			MissingKeywords: []string{"Docker"},
+			Strengths:       []string{"Go"},
+			Weaknesses:      []string{"Kubernetes"},
+			Suggestions:     []string{"Add projects"},
+		}, nil
 	}
 
 	req := models.ATSScoreRequest{
@@ -73,19 +64,64 @@ func TestCalculateATS(t *testing.T) {
 	}
 
 	resp, err := CalculateATS(req)
+
 	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
+		t.Fatal(err)
+	}
+
+	if !called {
+		t.Fatal("pipeline not called")
 	}
 
 	if resp.OverallScore != 90 {
-		t.Fatalf("expected overall score 90, got %d", resp.OverallScore)
-	}
-
-	if len(resp.MissingKeywords) != 1 {
-		t.Fatal("expected one missing keyword")
+		t.Fatal("wrong score")
 	}
 
 	if resp.SectionScores.Contact != 10 {
-		t.Fatal("section score mismatch")
+		t.Fatal("wrong contact score")
+	}
+
+	if len(resp.MissingKeywords) != 1 {
+		t.Fatal("wrong keywords")
+	}
+}
+
+func TestCalculateATS_Error(t *testing.T) {
+
+	oldWorkflow := newATSWorkflow
+	oldPipeline := executeATSPipeline
+
+	defer func() {
+		newATSWorkflow = oldWorkflow
+		executeATSPipeline = oldPipeline
+	}()
+
+	newATSWorkflow = func() workflow.Workflow {
+		return &MockWorkflow{}
+	}
+
+	executeATSPipeline = func(
+		cacheKey string,
+		input string,
+		wf workflow.Workflow,
+	) (*models.ATSScoreResponse, error) {
+
+		return nil, errors.New("pipeline failed")
+	}
+
+	resp, err := CalculateATS(models.ATSScoreRequest{
+		ResumeText: "Backend Developer",
+	})
+
+	if err == nil {
+		t.Fatal("expected error")
+	}
+
+	if err.Error() != "pipeline failed" {
+		t.Fatal(err)
+	}
+
+	if resp != nil {
+		t.Fatal("expected nil response")
 	}
 }

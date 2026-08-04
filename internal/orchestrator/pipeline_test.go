@@ -278,3 +278,154 @@ func TestExecutePipeline_NestedJSON(t *testing.T) {
 		t.Fatalf("expected 2 keywords")
 	}
 }
+
+func TestExecutePipeline_InvalidCacheJSON(t *testing.T) {
+
+	oldCacheGet := cacheGet
+	oldCacheSet := cacheSet
+	oldExecuteRetry := executeRetry
+	oldExtractJSON := extractJSON
+
+	defer func() {
+		cacheGet = oldCacheGet
+		cacheSet = oldCacheSet
+		executeRetry = oldExecuteRetry
+		extractJSON = oldExtractJSON
+	}()
+
+	cacheGet = func(string) (string, error) {
+		return `invalid json`, nil
+	}
+
+	cacheSet = func(key, value string) error {
+		return nil
+	}
+
+	executeRetry = func(
+		attempts int,
+		delay time.Duration,
+		fn func() (string, error),
+	) (string, error) {
+		return fn()
+	}
+
+	extractJSON = func(s string) string {
+		return s
+	}
+
+	wf := &MockWorkflow{
+		Response: `{
+			"summary":"Recovered",
+			"keywords":["Go"]
+		}`,
+	}
+
+	resp, err := ExecutePipeline[models.AnalyzeResponse](
+		"key",
+		"input",
+		wf,
+	)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if resp.Summary != "Recovered" {
+		t.Fatal("expected recovered response")
+	}
+}
+
+func TestExecutePipeline_WrappedAnswerNotJSON(t *testing.T) {
+
+	oldCacheGet := cacheGet
+	oldExecuteRetry := executeRetry
+	oldExtractJSON := extractJSON
+
+	defer func() {
+		cacheGet = oldCacheGet
+		executeRetry = oldExecuteRetry
+		extractJSON = oldExtractJSON
+	}()
+
+	cacheGet = func(string) (string, error) {
+		return "", fmt.Errorf("miss")
+	}
+
+	executeRetry = func(
+		a int,
+		d time.Duration,
+		fn func() (string, error),
+	) (string, error) {
+		return `{"answer":"hello world"}`, nil
+	}
+
+	extractJSON = func(s string) string {
+		return s
+	}
+
+	_, err := ExecutePipeline[models.AnalyzeResponse](
+		"key",
+		"input",
+		&MockWorkflow{},
+	)
+
+	if err == nil {
+		t.Fatal("expected parse error")
+	}
+}
+
+func TestExecutePipeline_CacheSetErrorIgnored(t *testing.T) {
+
+	oldCacheGet := cacheGet
+	oldCacheSet := cacheSet
+	oldExecuteRetry := executeRetry
+	oldExtractJSON := extractJSON
+
+	defer func() {
+		cacheGet = oldCacheGet
+		cacheSet = oldCacheSet
+		executeRetry = oldExecuteRetry
+		extractJSON = oldExtractJSON
+	}()
+
+	cacheGet = func(string) (string, error) {
+		return "", fmt.Errorf("miss")
+	}
+
+	cacheSet = func(key, value string) error {
+		return fmt.Errorf("redis down")
+	}
+
+	executeRetry = func(
+		a int,
+		d time.Duration,
+		fn func() (string, error),
+	) (string, error) {
+		return fn()
+	}
+
+	extractJSON = func(s string) string {
+		return s
+	}
+
+	wf := &MockWorkflow{
+		Response: `{
+			"summary":"Success",
+			"keywords":["Go"]
+		}`,
+	}
+
+	resp, err := ExecutePipeline[models.AnalyzeResponse](
+		"key",
+		"input",
+		wf,
+	)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if resp.Summary != "Success" {
+		t.Fatal("expected success")
+	}
+}
