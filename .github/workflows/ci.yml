@@ -13,17 +13,23 @@ on:
 
 jobs:
   test:
+    name: Build • Test • Coverage
 
     runs-on: ubuntu-latest
 
     services:
       redis:
-        image: redis:7
+        image: redis:7-alpine
         ports:
           - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
       postgres:
-        image: postgres:16
+        image: postgres:16-alpine
 
         env:
           POSTGRES_USER: postgres
@@ -31,7 +37,7 @@ jobs:
           POSTGRES_DB: ai_orchestrator
 
         ports:
-          - 5432:5432
+          - 5433:5432
 
         options: >-
           --health-cmd="pg_isready -U postgres"
@@ -41,30 +47,50 @@ jobs:
 
     env:
       REDIS_ADDR: localhost:6379
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/ai_orchestrator?sslmode=disable
+      DATABASE_URL: postgres://postgres:postgres@localhost:5433/ai_orchestrator?sslmode=disable
+      GEMINI_API_KEY: dummy-key
+      GIN_MODE: test
 
     steps:
-
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.25"
+          go-version-file: go.mod
+          cache: true
 
-      - name: Download dependencies
+      - name: Download Dependencies
         run: go mod download
 
-      - name: Verify formatting
-        run: |
-          test -z "$(gofmt -l .)"
+      - name: Verify Modules
+        run: go mod tidy
 
-      - name: Run Vet
+      - name: Check Formatting
+        run: |
+          if [ -n "$(gofmt -l .)" ]; then
+            echo "The following files are not formatted:"
+            gofmt -l .
+            exit 1
+          fi
+
+      - name: Run go vet
         run: go vet ./...
 
-      - name: Build
+      - name: Build Project
         run: go build ./...
 
-      - name: Run Tests
-        run: go test ./...
+      - name: Run Unit Tests
+        run: go test -v ./...
+
+      - name: Generate Coverage
+        run: |
+          go test ./... -coverprofile=coverage.out
+          go tool cover -func=coverage.out
+
+      - name: Validate Docker Compose
+        run: docker compose config
+
+      - name: Build Docker Image
+        run: docker build -t ai-orchestrator .

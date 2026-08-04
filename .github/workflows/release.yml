@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+
+      matrix:
+
+        goos:
+          - linux
+          - windows
+          - darwin
+
+        goarch:
+          - amd64
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - run: |
+          mkdir build
+
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build \
+          -o build/ai-orchestrator-${{ matrix.goos }}
