@@ -8,6 +8,19 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/workflow"
 )
 
+// Dependency injection points
+var (
+	newCoverLetterWorkflow func() workflow.Workflow = func() workflow.Workflow {
+		return workflow.NewCoverLetterWorkflow()
+	}
+
+	executeCoverLetterPipeline func(
+		cacheKey string,
+		input string,
+		wf workflow.Workflow,
+	) (*models.CoverLetterResponse, error) = ExecutePipeline[models.CoverLetterResponse]
+)
+
 func GenerateCoverLetter(req models.CoverLetterRequest) (*models.CoverLetterResponse, error) {
 
 	input := fmt.Sprintf(
@@ -31,9 +44,9 @@ Job Description:
 
 	cacheKey := cache.GenerateKey(input)
 
-	return ExecutePipeline[models.CoverLetterResponse](
+	return executeCoverLetterPipeline(
 		cacheKey,
 		input,
-		workflow.NewCoverLetterWorkflow(),
+		newCoverLetterWorkflow(),
 	)
 }
