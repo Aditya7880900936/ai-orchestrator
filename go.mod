@@ -16,7 +16,7 @@ require (
 	github.com/swaggo/swag v1.16.6
 	go.uber.org/zap v1.28.0
 	golang.org/x/time v0.15.0
-	google.golang.org/genai v1.59.0
+	google.golang.org/genai v1.66.0
 )
 
 require (
