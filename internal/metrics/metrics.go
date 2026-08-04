@@ -9,8 +9,11 @@ var AnalyzeRequests = prometheus.NewCounter(
 	},
 )
 
+// Dependency injection point
+var mustRegister = prometheus.MustRegister
+
 func Init() {
-	prometheus.MustRegister(
+	mustRegister(
 		AnalyzeRequests,
 	)
 }

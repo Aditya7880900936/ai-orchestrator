@@ -7,9 +7,18 @@ import (
 	"google.golang.org/genai"
 )
 
-var Client *genai.Client
+type LLMClient interface {
+	Generate(prompt string) (string, error)
+}
+
+type GeminiClient struct {
+	client *genai.Client
+}
+
+var Client LLMClient
 
 func InitGemini() error {
+
 	ctx := context.Background()
 
 	client, err := genai.NewClient(
@@ -23,14 +32,18 @@ func InitGemini() error {
 		return err
 	}
 
-	Client = client
+	Client = &GeminiClient{
+		client: client,
+	}
+
 	return nil
 }
 
-func Generate(prompt string) (string, error) {
+func (g *GeminiClient) Generate(prompt string) (string, error) {
+
 	ctx := context.Background()
 
-	resp, err := Client.Models.GenerateContent(
+	resp, err := g.client.Models.GenerateContent(
 		ctx,
 		"gemini-2.5-flash",
 		genai.Text(prompt),
@@ -42,4 +55,8 @@ func Generate(prompt string) (string, error) {
 	}
 
 	return resp.Text(), nil
+}
+
+func Generate(prompt string) (string, error) {
+	return Client.Generate(prompt)
 }

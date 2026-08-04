@@ -11,6 +11,19 @@ import (
 
 var DB *pgxpool.Pool
 
+// Dependency injection points
+var (
+	newPool = pgxpool.New
+
+	sleep = time.Sleep
+
+	fatal = log.Fatal
+
+	ping = func(pool *pgxpool.Pool) error {
+		return pool.Ping(context.Background())
+	}
+)
+
 func Init() {
 
 	url := os.Getenv("DATABASE_URL")
@@ -23,10 +36,10 @@ func Init() {
 
 	for i := 1; i <= 10; i++ {
 
-		pool, err = pgxpool.New(context.Background(), url)
+		pool, err = newPool(context.Background(), url)
 		if err == nil {
 
-			if err = pool.Ping(context.Background()); err == nil {
+			if err = ping(pool); err == nil {
 				DB = pool
 				log.Println("✅ PostgreSQL Connected")
 				return
@@ -34,8 +47,8 @@ func Init() {
 		}
 
 		log.Printf("Waiting for PostgreSQL... (%d/10)", i)
-		time.Sleep(3 * time.Second)
+		sleep(3 * time.Second)
 	}
 
-	log.Fatal("Could not connect to PostgreSQL:", err)
+	fatal("Could not connect to PostgreSQL:", err)
 }
