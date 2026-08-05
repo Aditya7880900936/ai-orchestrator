@@ -1,10 +1,553 @@
 basePath: /
+definitions:
+  model.ATSScoreRequest:
+    properties:
+      resume_text:
+        type: string
+    required:
+    - resume_text
+    type: object
+  model.ATSScoreResponse:
+    properties:
+      missing_keywords:
+        items:
+          type: string
+        type: array
+      overall_score:
+        type: integer
+      section_scores:
+        $ref: '#/definitions/model.SectionScore'
+      strengths:
+        items:
+          type: string
+        type: array
+      suggestions:
+        items:
+          type: string
+        type: array
+      weaknesses:
+        items:
+          type: string
+        type: array
+    type: object
+  model.AnalyzeRequest:
+    properties:
+      prompt:
+        type: string
+    type: object
+  model.AnalyzeResponse:
+    properties:
+      keywords:
+        items:
+          type: string
+        type: array
+      summary:
+        type: string
+    type: object
+  model.CoverLetterRequest:
+    properties:
+      company:
+        type: string
+      job_description:
+        type: string
+      name:
+        type: string
+      position:
+        type: string
+      resume_text:
+        type: string
+    required:
+    - company
+    - job_description
+    - name
+    - position
+    - resume_text
+    type: object
+  model.CoverLetterResponse:
+    properties:
+      cover_letter:
+        type: string
+    type: object
+  model.JobMatchRequest:
+    properties:
+      job_description:
+        type: string
+      resume_text:
+        type: string
+    required:
+    - job_description
+    - resume_text
+    type: object
+  model.JobMatchResponse:
+    properties:
+      match_percentage:
+        type: integer
+      matched_skills:
+        items:
+          type: string
+        type: array
+      missing_skills:
+        items:
+          type: string
+        type: array
+      recommendations:
+        items:
+          type: string
+        type: array
+      strengths:
+        items:
+          type: string
+        type: array
+      weaknesses:
+        items:
+          type: string
+        type: array
+    type: object
+  model.ResumeAnalyzeRequest:
+    properties:
+      resume_text:
+        type: string
+    required:
+    - resume_text
+    type: object
+  model.ResumeAnalyzeResponse:
+    properties:
+      experience_years:
+        type: integer
+      missing_skills:
+        items:
+          type: string
+        type: array
+      skills:
+        items:
+          type: string
+        type: array
+      strengths:
+        items:
+          type: string
+        type: array
+      summary:
+        type: string
+    type: object
+  model.ResumeChatRequest:
+    properties:
+      question:
+        type: string
+      session_id:
+        type: string
+    required:
+    - question
+    - session_id
+    type: object
+  model.ResumeChatResponse:
+    properties:
+      answer: {}
+    type: object
+  model.ResumeImproveRequest:
+    properties:
+      resume_text:
+        type: string
+    required:
+    - resume_text
+    type: object
+  model.ResumeImproveResponse:
+    properties:
+      action_verbs:
+        items:
+          type: string
+        type: array
+      improved_experience:
+        items:
+          type: string
+        type: array
+      improved_projects:
+        items:
+          type: string
+        type: array
+      improved_summary:
+        type: string
+      missing_sections:
+        items:
+          type: string
+        type: array
+      overall_suggestions:
+        items:
+          type: string
+        type: array
+    type: object
+  model.SectionScore:
+    properties:
+      contact:
+        type: integer
+      education:
+        type: integer
+      experience:
+        type: integer
+      skills:
+        type: integer
+      summary:
+        type: integer
+    type: object
+  model.SkillExtractionRequest:
+    properties:
+      resume_text:
+        type: string
+    required:
+    - resume_text
+    type: object
+  model.SkillExtractionResponse:
+    properties:
+      cloud:
+        items:
+          type: string
+        type: array
+      databases:
+        items:
+          type: string
+        type: array
+      frameworks:
+        items:
+          type: string
+        type: array
+      soft_skills:
+        items:
+          type: string
+        type: array
+      technical_skills:
+        items:
+          type: string
+        type: array
+      tools:
+        items:
+          type: string
+        type: array
+    type: object
 host: localhost:8080
 info:
-  contact: {}
+  contact:
+    email: adityasanskarsrivastav788@gmail.com
+    name: Aditya Sanskar Srivastav
+    url: https://github.com/Aditya7880900936
   description: Production-grade AI Orchestration Backend with Resume Analysis, ATS
     Scoring, Job Matching, Resume Chat, Cover Letter Generation and AI Workflows.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: https://github.com/Aditya7880900936/ai-orchestrator
   title: AI Orchestrator API
   version: "1.0"
-paths: {}
+paths:
+  /analyze:
+    post:
+      consumes:
+      - application/json
+      description: Processes a user prompt through the AI orchestration pipeline and
+        returns a structured AI-generated response.
+      parameters:
+      - description: Analyze Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.AnalyzeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Analysis completed successfully
+          schema:
+            $ref: '#/definitions/model.AnalyzeResponse'
+        "400":
+          description: Invalid request or missing prompt
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Analyze text using AI
+      tags:
+      - Analyze
+  /ats/score:
+    post:
+      consumes:
+      - application/json
+      description: Calculates the ATS compatibility score of a resume against the
+        provided job description using AI analysis.
+      parameters:
+      - description: ATS Score Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.ATSScoreRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ATS score calculated successfully
+          schema:
+            $ref: '#/definitions/model.ATSScoreResponse'
+        "400":
+          description: Invalid request payload
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Calculate ATS Score
+      tags:
+      - ATS
+  /cover-letter/generate:
+    post:
+      consumes:
+      - application/json
+      description: Generates a personalized AI-powered cover letter based on the provided
+        resume and job description.
+      parameters:
+      - description: Cover Letter Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.CoverLetterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Cover letter generated successfully
+          schema:
+            $ref: '#/definitions/model.CoverLetterResponse'
+        "400":
+          description: Invalid request payload
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Generate Cover Letter
+      tags:
+      - Cover Letter
+  /job/match:
+    post:
+      consumes:
+      - application/json
+      description: Matches a candidate's resume against a job description and returns
+        an AI-generated job compatibility analysis.
+      parameters:
+      - description: Job Match Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.JobMatchRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Job match analysis completed successfully
+          schema:
+            $ref: '#/definitions/model.JobMatchResponse'
+        "400":
+          description: Invalid request payload
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Match Resume with Job
+      tags:
+      - Job Matching
+  /resume/analyze:
+    post:
+      consumes:
+      - application/json
+      description: Analyzes a resume and extracts structured insights, strengths,
+        weaknesses, and AI-generated recommendations.
+      parameters:
+      - description: Resume Analysis Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResumeAnalyzeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Resume analyzed successfully
+          schema:
+            $ref: '#/definitions/model.ResumeAnalyzeResponse'
+        "400":
+          description: Invalid request payload
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Analyze Resume
+      tags:
+      - Resume
+  /resume/chat:
+    post:
+      consumes:
+      - application/json
+      description: Enables conversational AI interactions over an uploaded resume,
+        allowing users to ask questions and receive context-aware responses.
+      parameters:
+      - description: Resume Chat Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResumeChatRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Resume chat response generated successfully
+          schema:
+            $ref: '#/definitions/model.ResumeChatResponse'
+        "400":
+          description: Invalid request payload
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Chat with Resume
+      tags:
+      - Resume
+  /resume/improve:
+    post:
+      consumes:
+      - application/json
+      description: Generates AI-powered suggestions to improve a resume.
+      parameters:
+      - description: Resume Improvement Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.ResumeImproveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResumeImproveResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Improve Resume
+      tags:
+      - Resume
+  /resume/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Uploads and parses PDF or DOCX resumes for AI processing.
+      parameters:
+      - description: Resume File
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Upload Resume
+      tags:
+      - Resume
+  /skills/extract:
+    post:
+      consumes:
+      - application/json
+      description: Extracts technical and soft skills from a resume using AI-powered
+        analysis.
+      parameters:
+      - description: Skill Extraction Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.SkillExtractionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Skills extracted successfully
+          schema:
+            $ref: '#/definitions/model.SkillExtractionResponse'
+        "400":
+          description: Invalid request payload
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Extract Skills
+      tags:
+      - Skills
 swagger: "2.0"

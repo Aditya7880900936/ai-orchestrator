@@ -15,6 +15,18 @@ import (
 // Dependency injection point
 var extractSkills = orchestrator.ExtractSkills
 
+// ExtractSkills godoc
+//
+//	@Summary		Extract Skills
+//	@Description	Extracts technical and soft skills from a resume using AI-powered analysis.
+//	@Tags			Skills
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		model.SkillExtractionRequest	true	"Skill Extraction Request"
+//	@Success		200		{object}	model.SkillExtractionResponse	"Skills extracted successfully"
+//	@Failure		400		{object}	map[string]string			"Invalid request payload"
+//	@Failure		500		{object}	map[string]string			"Internal server error"
+//	@Router			/skills/extract [post]
 func ExtractSkills(c *gin.Context) {
 
 	var req model.SkillExtractionRequest

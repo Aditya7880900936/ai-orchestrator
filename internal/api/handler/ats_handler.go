@@ -11,6 +11,18 @@ import (
 // Dependency injection point
 var calculateATS = orchestrator.CalculateATS
 
+// CalculateATS godoc
+//
+//	@Summary		Calculate ATS Score
+//	@Description	Calculates the ATS compatibility score of a resume against the provided job description using AI analysis.
+//	@Tags			ATS
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		models.ATSScoreRequest	true	"ATS Score Request"
+//	@Success		200		{object}	models.ATSScoreResponse	"ATS score calculated successfully"
+//	@Failure		400		{object}	map[string]string		"Invalid request payload"
+//	@Failure		500		{object}	map[string]string		"Internal server error"
+//	@Router			/ats/score [post]
 func CalculateATS(c *gin.Context) {
 	var req models.ATSScoreRequest
 

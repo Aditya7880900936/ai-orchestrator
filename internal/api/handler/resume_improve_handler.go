@@ -11,6 +11,18 @@ import (
 // Dependency injection point
 var improveResume = orchestrator.ImproveResume
 
+// ImproveResume godoc
+//
+//	@Summary		Improve Resume
+//	@Description	Generates AI-powered suggestions to improve a resume.
+//	@Tags			Resume
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		models.ResumeImproveRequest	true	"Resume Improvement Request"
+//	@Success		200		{object}	models.ResumeImproveResponse
+//	@Failure		400		{object}	map[string]string
+//	@Failure		500		{object}	map[string]string
+//	@Router			/resume/improve [post]
 func ImproveResume(c *gin.Context) {
 	var req models.ResumeImproveRequest
 

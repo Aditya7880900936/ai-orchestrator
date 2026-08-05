@@ -12,6 +12,18 @@ import (
 // Dependency injection point
 var uploadResume = orchestrator.UploadResume
 
+// UploadResume godoc
+//
+//	@Summary		Upload Resume
+//	@Description	Uploads and parses PDF or DOCX resumes for AI processing.
+//	@Tags			Resume
+//	@Accept			multipart/form-data
+//	@Produce		json
+//	@Param			file	formData	file	true	"Resume File"
+//	@Success		200		{object}	map[string]interface{}
+//	@Failure		400		{object}	map[string]string
+//	@Failure		500		{object}	map[string]string
+//	@Router			/resume/upload [post]
 func UploadResume(c *gin.Context) {
 
 	file, err := c.FormFile("resume")

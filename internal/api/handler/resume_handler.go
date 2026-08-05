@@ -15,6 +15,18 @@ import (
 // Dependency injection point
 var analyzeResume = orchestrator.AnalyzeResume
 
+// AnalyzeResume godoc
+//
+//	@Summary		Analyze Resume
+//	@Description	Analyzes a resume and extracts structured insights, strengths, weaknesses, and AI-generated recommendations.
+//	@Tags			Resume
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		model.ResumeAnalyzeRequest	true	"Resume Analysis Request"
+//	@Success		200		{object}	model.ResumeAnalyzeResponse	"Resume analyzed successfully"
+//	@Failure		400		{object}	map[string]string			"Invalid request payload"
+//	@Failure		500		{object}	map[string]string			"Internal server error"
+//	@Router			/resume/analyze [post]
 func AnalyzeResume(c *gin.Context) {
 
 	var req model.ResumeAnalyzeRequest

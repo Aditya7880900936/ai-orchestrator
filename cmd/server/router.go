@@ -6,6 +6,8 @@ import (
 	"github.com/Aditya7880900936/ai-orchestrator/internal/api/routes"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/middleware"
 
+	_ "github.com/Aditya7880900936/ai-orchestrator/docs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 

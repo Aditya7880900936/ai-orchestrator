@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/gin-gonic/gin"
@@ -36,6 +37,12 @@ func getLimiter(ip string) *rate.Limiter {
 
 func RateLimiter() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
+		// Skip rate limiting for Swagger assets
+		if strings.HasPrefix(c.Request.URL.Path, "/swagger") {
+			c.Next()
+			return
+		}
 
 		limiter := getLimiter(c.ClientIP())
 

@@ -3,10 +3,827 @@
     "info": {
         "description": "Production-grade AI Orchestration Backend with Resume Analysis, ATS Scoring, Job Matching, Resume Chat, Cover Letter Generation and AI Workflows.",
         "title": "AI Orchestrator API",
-        "contact": {},
+        "termsOfService": "https://github.com/Aditya7880900936/ai-orchestrator",
+        "contact": {
+            "name": "Aditya Sanskar Srivastav",
+            "url": "https://github.com/Aditya7880900936",
+            "email": "adityasanskarsrivastav788@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
         "version": "1.0"
     },
     "host": "localhost:8080",
     "basePath": "/",
-    "paths": {}
+    "paths": {
+        "/analyze": {
+            "post": {
+                "description": "Processes a user prompt through the AI orchestration pipeline and returns a structured AI-generated response.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Analyze"
+                ],
+                "summary": "Analyze text using AI",
+                "parameters": [
+                    {
+                        "description": "Analyze Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AnalyzeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Analysis completed successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.AnalyzeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or missing prompt",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ats/score": {
+            "post": {
+                "description": "Calculates the ATS compatibility score of a resume against the provided job description using AI analysis.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ATS"
+                ],
+                "summary": "Calculate ATS Score",
+                "parameters": [
+                    {
+                        "description": "ATS Score Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ATSScoreRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ATS score calculated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.ATSScoreResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request payload",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cover-letter/generate": {
+            "post": {
+                "description": "Generates a personalized AI-powered cover letter based on the provided resume and job description.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cover Letter"
+                ],
+                "summary": "Generate Cover Letter",
+                "parameters": [
+                    {
+                        "description": "Cover Letter Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CoverLetterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cover letter generated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.CoverLetterResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request payload",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/job/match": {
+            "post": {
+                "description": "Matches a candidate's resume against a job description and returns an AI-generated job compatibility analysis.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Job Matching"
+                ],
+                "summary": "Match Resume with Job",
+                "parameters": [
+                    {
+                        "description": "Job Match Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.JobMatchRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job match analysis completed successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.JobMatchResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request payload",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/resume/analyze": {
+            "post": {
+                "description": "Analyzes a resume and extracts structured insights, strengths, weaknesses, and AI-generated recommendations.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Resume"
+                ],
+                "summary": "Analyze Resume",
+                "parameters": [
+                    {
+                        "description": "Resume Analysis Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ResumeAnalyzeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resume analyzed successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResumeAnalyzeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request payload",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/resume/chat": {
+            "post": {
+                "description": "Enables conversational AI interactions over an uploaded resume, allowing users to ask questions and receive context-aware responses.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Resume"
+                ],
+                "summary": "Chat with Resume",
+                "parameters": [
+                    {
+                        "description": "Resume Chat Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ResumeChatRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resume chat response generated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResumeChatResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request payload",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/resume/improve": {
+            "post": {
+                "description": "Generates AI-powered suggestions to improve a resume.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Resume"
+                ],
+                "summary": "Improve Resume",
+                "parameters": [
+                    {
+                        "description": "Resume Improvement Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ResumeImproveRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ResumeImproveResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/resume/upload": {
+            "post": {
+                "description": "Uploads and parses PDF or DOCX resumes for AI processing.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Resume"
+                ],
+                "summary": "Upload Resume",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Resume File",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/skills/extract": {
+            "post": {
+                "description": "Extracts technical and soft skills from a resume using AI-powered analysis.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Extract Skills",
+                "parameters": [
+                    {
+                        "description": "Skill Extraction Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SkillExtractionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Skills extracted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/model.SkillExtractionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request payload",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.ATSScoreRequest": {
+            "type": "object",
+            "required": [
+                "resume_text"
+            ],
+            "properties": {
+                "resume_text": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ATSScoreResponse": {
+            "type": "object",
+            "properties": {
+                "missing_keywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "overall_score": {
+                    "type": "integer"
+                },
+                "section_scores": {
+                    "$ref": "#/definitions/model.SectionScore"
+                },
+                "strengths": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "suggestions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "weaknesses": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model.AnalyzeRequest": {
+            "type": "object",
+            "properties": {
+                "prompt": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AnalyzeResponse": {
+            "type": "object",
+            "properties": {
+                "keywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "summary": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CoverLetterRequest": {
+            "type": "object",
+            "required": [
+                "company",
+                "job_description",
+                "name",
+                "position",
+                "resume_text"
+            ],
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "job_description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "resume_text": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CoverLetterResponse": {
+            "type": "object",
+            "properties": {
+                "cover_letter": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.JobMatchRequest": {
+            "type": "object",
+            "required": [
+                "job_description",
+                "resume_text"
+            ],
+            "properties": {
+                "job_description": {
+                    "type": "string"
+                },
+                "resume_text": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.JobMatchResponse": {
+            "type": "object",
+            "properties": {
+                "match_percentage": {
+                    "type": "integer"
+                },
+                "matched_skills": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "missing_skills": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "recommendations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "strengths": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "weaknesses": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model.ResumeAnalyzeRequest": {
+            "type": "object",
+            "required": [
+                "resume_text"
+            ],
+            "properties": {
+                "resume_text": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResumeAnalyzeResponse": {
+            "type": "object",
+            "properties": {
+                "experience_years": {
+                    "type": "integer"
+                },
+                "missing_skills": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "skills": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "strengths": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "summary": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResumeChatRequest": {
+            "type": "object",
+            "required": [
+                "question",
+                "session_id"
+            ],
+            "properties": {
+                "question": {
+                    "type": "string"
+                },
+                "session_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResumeChatResponse": {
+            "type": "object",
+            "properties": {
+                "answer": {}
+            }
+        },
+        "model.ResumeImproveRequest": {
+            "type": "object",
+            "required": [
+                "resume_text"
+            ],
+            "properties": {
+                "resume_text": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ResumeImproveResponse": {
+            "type": "object",
+            "properties": {
+                "action_verbs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "improved_experience": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "improved_projects": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "improved_summary": {
+                    "type": "string"
+                },
+                "missing_sections": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "overall_suggestions": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model.SectionScore": {
+            "type": "object",
+            "properties": {
+                "contact": {
+                    "type": "integer"
+                },
+                "education": {
+                    "type": "integer"
+                },
+                "experience": {
+                    "type": "integer"
+                },
+                "skills": {
+                    "type": "integer"
+                },
+                "summary": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.SkillExtractionRequest": {
+            "type": "object",
+            "required": [
+                "resume_text"
+            ],
+            "properties": {
+                "resume_text": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.SkillExtractionResponse": {
+            "type": "object",
+            "properties": {
+                "cloud": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "databases": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "frameworks": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "soft_skills": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "technical_skills": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tools": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
 }

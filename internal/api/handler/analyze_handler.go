@@ -14,6 +14,18 @@ import (
 // Dependency injection point
 var analyze = orchestrator.Analyze
 
+// AnalyzeHandler godoc
+//
+//	@Summary		Analyze text using AI
+//	@Description	Processes a user prompt through the AI orchestration pipeline and returns a structured AI-generated response.
+//	@Tags			Analyze
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		models.AnalyzeRequest	true	"Analyze Request"
+//	@Success		200		{object}	models.AnalyzeResponse	"Analysis completed successfully"
+//	@Failure		400		{object}	map[string]string		"Invalid request or missing prompt"
+//	@Failure		500		{object}	map[string]string		"Internal server error"
+//	@Router			/analyze [post]
 func AnalyzeHandler(c *gin.Context) {
 
 	metrics.AnalyzeRequests.Inc()

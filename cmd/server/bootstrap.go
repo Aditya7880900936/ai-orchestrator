@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/Aditya7880900936/ai-orchestrator/internal/cache"
 	"github.com/Aditya7880900936/ai-orchestrator/internal/database"
 	llm "github.com/Aditya7880900936/ai-orchestrator/internal/llm"
@@ -39,7 +41,7 @@ var (
 func initializeImpl() error {
 
 	if err := loadEnv(); err != nil {
-		return err
+		log.Println("No .env file found, using environment variables")
 	}
 
 	initRedis()

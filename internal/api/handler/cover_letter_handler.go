@@ -11,6 +11,18 @@ import (
 // Dependency injection point
 var generateCoverLetter = orchestrator.GenerateCoverLetter
 
+// GenerateCoverLetter godoc
+//
+//	@Summary		Generate Cover Letter
+//	@Description	Generates a personalized AI-powered cover letter based on the provided resume and job description.
+//	@Tags			Cover Letter
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		models.CoverLetterRequest	true	"Cover Letter Request"
+//	@Success		200		{object}	models.CoverLetterResponse	"Cover letter generated successfully"
+//	@Failure		400		{object}	map[string]string			"Invalid request payload"
+//	@Failure		500		{object}	map[string]string			"Internal server error"
+//	@Router			/cover-letter/generate [post]
 func GenerateCoverLetter(c *gin.Context) {
 	var req models.CoverLetterRequest
 

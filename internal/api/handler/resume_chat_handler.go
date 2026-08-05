@@ -11,6 +11,18 @@ import (
 // Dependency injection point
 var chatWithResume = orchestrator.ChatWithResume
 
+// ChatWithResume godoc
+//
+//	@Summary		Chat with Resume
+//	@Description	Enables conversational AI interactions over an uploaded resume, allowing users to ask questions and receive context-aware responses.
+//	@Tags			Resume
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		models.ResumeChatRequest	true	"Resume Chat Request"
+//	@Success		200		{object}	models.ResumeChatResponse	"Resume chat response generated successfully"
+//	@Failure		400		{object}	map[string]string			"Invalid request payload"
+//	@Failure		500		{object}	map[string]string			"Internal server error"
+//	@Router			/resume/chat [post]
 func ChatWithResume(c *gin.Context) {
 	var req models.ResumeChatRequest
 

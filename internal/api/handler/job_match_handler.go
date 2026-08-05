@@ -11,6 +11,18 @@ import (
 // Dependency injection point
 var matchJob = orchestrator.MatchJob
 
+// MatchJob godoc
+//
+//	@Summary		Match Resume with Job
+//	@Description	Matches a candidate's resume against a job description and returns an AI-generated job compatibility analysis.
+//	@Tags			Job Matching
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		models.JobMatchRequest	true	"Job Match Request"
+//	@Success		200		{object}	models.JobMatchResponse	"Job match analysis completed successfully"
+//	@Failure		400		{object}	map[string]string		"Invalid request payload"
+//	@Failure		500		{object}	map[string]string		"Internal server error"
+//	@Router			/job/match [post]
 func MatchJob(c *gin.Context) {
 	var req models.JobMatchRequest
 
