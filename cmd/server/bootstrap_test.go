@@ -81,19 +81,50 @@ func TestInitialize_Success(t *testing.T) {
 func TestInitialize_LoadEnvError(t *testing.T) {
 
 	oldLoad := loadEnv
+	oldRedis := initRedis
+	oldDB := initDatabase
+	oldRepo := newAnalysisRepository
+	oldMetrics := initMetrics
+	oldLogger := initLogger
+	oldGemini := initGemini
 
 	defer func() {
 		loadEnv = oldLoad
+		initRedis = oldRedis
+		initDatabase = oldDB
+		newAnalysisRepository = oldRepo
+		initMetrics = oldMetrics
+		initLogger = oldLogger
+		initGemini = oldGemini
 	}()
 
+	// Simulate missing .env
 	loadEnv = func() error {
 		return errors.New("env failed")
 	}
 
+	initRedis = func() {}
+	initDatabase = func() {}
+
+	newAnalysisRepository = func() analysisRepository {
+		return &mockRepository{}
+	}
+
+	initMetrics = func() {}
+
+	initLogger = func() error {
+		return nil
+	}
+
+	initGemini = func() error {
+		return nil
+	}
+
 	err := initialize()
 
-	if err == nil {
-		t.Fatal("expected error")
+	// Missing .env should NOT fail initialization
+	if err != nil {
+		t.Fatalf("expected initialize to continue without .env, got: %v", err)
 	}
 }
 
